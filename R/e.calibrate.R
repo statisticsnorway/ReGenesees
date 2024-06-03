@@ -39,6 +39,9 @@ function (design, df.population,
         stop("Object 'design' must inherit from class analytic")
     if (!inherits(df.population, "data.frame")) 
         stop("Object 'df.population' must be of class data frame")
+    # Prevent havoc caused by tibbles:
+    if (inherits(df.population, c("tbl_df", "tbl")))
+        df.population <- as.data.frame(df.population)
     if (!inherits(calmodel, "formula")) 
         stop("Parameter 'calmodel' must be supplied as a formula")
     if (!identical(partition, FALSE)) {
@@ -196,7 +199,7 @@ function (design, df.population,
         # MEM.mega <- memory.limit() # NOTE: memory.limit() was intended for
         #                                    32-bit versions of Windows, which
         #                                    are no longer supported in R
-        #                                    versions >= 4.2.0 (21/03/20222)
+        #                                    versions >= 4.2.0 (21/03/2022)
         MEM.mega <- 4096
         mem.frac <- 10                 #Default value
         need.gc <- ( ((8 * nrec * naux )/(1024^2))  > (MEM.mega / mem.frac) )
